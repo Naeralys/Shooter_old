@@ -26,12 +26,16 @@ Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y
 }
 
 void Character::Update() {
-
     x += velX;
     y += velY;
     
     dest.x = x;
     dest.y = y;
+    
+    if( velX > 0 )
+        velX -= 0.5;
+    if( velX < 0 )
+        velX += 0.5;
 }
 
 void Character::Render() {

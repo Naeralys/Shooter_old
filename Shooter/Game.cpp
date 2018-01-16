@@ -60,11 +60,11 @@ void Game::Init( const char *title, int xPos, int yPos, int width, int height, b
     playerTwo = new Character( "assets/player.bmp", Game::renderer,  100, 100 );
     bulletOne = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
     bulletTwo = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
-    tile[0] = new GameObject( "assets/bullet.bmp", Game::renderer, 200, 400, 100, 10 );
-    for( int i = 1; i < 5; i++ ) {
-        tile[i] = NULL;
-    }
-    
+    tile[0] = new GameObject( "assets/bullet.bmp", Game::renderer, 100, 400, 100, 10 );
+    tile[1] = new GameObject( "assets/bullet.bmp", Game::renderer, 300, 300, 100, 10 );
+    tile[2] = new GameObject( "assets/bullet.bmp", Game::renderer, 700, 450, 100, 10 );
+    tile[3] = new GameObject( "assets/bullet.bmp", Game::renderer, 550, 350, 100, 10 );
+    tile[4] = new GameObject( "assets/bullet.bmp", Game::renderer, 400, 500, 100, 10 );
 }
 void Game::HandleEvents() {
     SDL_Event event;
@@ -72,29 +72,6 @@ void Game::HandleEvents() {
     while( SDL_PollEvent( &event ) != 0 ) {
         if( event.type == SDL_QUIT )
             isRunning = false;
-        else {
-            switch( event.type )
-            {
-                case SDL_KEYUP:
-                    switch( event.key.keysym.sym ){
-                        case SDLK_a:
-                            playerOne->velX = 0;
-                            break;
-                        case SDLK_d:
-                            playerOne->velX = 0;
-                            break;
-                        case SDLK_LEFT:
-                            playerTwo->velX = 0;
-                            break;
-                        case SDLK_RIGHT:
-                            playerTwo->velX = 0;
-                            break;
-                    }
-                    break;
-                default:
-                    break;
-            }
-        }
     }
     keyState = SDL_GetKeyboardState( NULL );
     // Player one
@@ -176,8 +153,13 @@ void Game::Update()
 }
 void Game::Render()
 {
+    SDL_SetRenderDrawColor( renderer, 0, 0, 0, 0 );
     SDL_RenderClear( renderer );
     tile[0]->Render();
+    tile[1]->Render();
+    tile[2]->Render();
+    tile[3]->Render();
+    tile[4]->Render();
     playerOne->Render();
     playerTwo->Render();
     bulletOne->Render();

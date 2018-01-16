@@ -12,27 +12,26 @@
 GameObject::GameObject( const char* fileName, SDL_Renderer* renderer, int xPos, int yPos, int width, int height ) {
     this->renderer = renderer;
     texture = TextureManager::LoadTexture( fileName );
-    x = xPos;
-    y = yPos;
-    w = width;
-    h = height;
+    this->x = xPos;
+    this->y = yPos;
+    this->w = width;
+    this->h = height;
     src.x = 0;
     src.y = 0;
-    src.h = h;
-    src.w = w;
+    src.h = height;
+    src.w = width;
     dest.h = src.h;
     dest.w = src.w;
-    dest.x = x;
-    dest.y = y;
+    dest.x = xPos;
+    dest.y = yPos;
 }
 
 void GameObject::Update() {
-    x += velX;
-    y += velY;
-    
     dest.x = x;
     dest.y = y;
+    x += velX;
+    y += velY;
 }
 void GameObject::Render() {
-    SDL_RenderCopy( renderer, texture, &src, &dest );
+    SDL_RenderCopy( Game::renderer, texture, &src, &dest );
 }

@@ -1,4 +1,4 @@
-//
+///Users/adam/Development/Shooter/Shooter/GameObject.hpp
 //  GameObject.hpp
 //  Shooter
 //
@@ -13,8 +13,8 @@
 
 class GameObject {
 private:
-    SDL_Texture* texture;
-    SDL_Rect src, dest;
+    SDL_Texture *texture;
+    SDL_Rect dest, src;
     SDL_Renderer* renderer;
 public:
     float w, h, x, y, velX, velY;
