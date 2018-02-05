@@ -12,8 +12,8 @@
 Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y ) {
     this->renderer = renderer;
     texture = TextureManager::LoadTexture( fileName );
-    this->x = 0;
-    this->y = 600;
+    this->x = SCREEN_WIDTH / 2;
+    this->y = SCREEN_HEIGHT - 40;
     this->velX = 0;
     this->velY = 0;
     src.x = 0;
@@ -22,7 +22,7 @@ Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y
     src.w = 32;
     dest.h = src.h;
     dest.w = src.w;
-    hp = 20;
+    keylock = false;
 }
 
 void Character::Update() {
@@ -31,13 +31,28 @@ void Character::Update() {
     
     dest.x = x;
     dest.y = y;
-    
-    if( velX > 0 )
+        
+    if( velX > 0.5 )
         velX -= 0.5;
-    if( velX < 0 )
+    if( velX < -0.5 )
         velX += 0.5;
+    if( velX > -0.6 && velX < 0.6)
+        velX = 0;
+    if( keylock )
+        locktimer++;
+    if( locktimer > locktime ) {
+        keylock = false;
+        locktimer = 0;
+    }
 }
 
 void Character::Render() {
     SDL_RenderCopy( Game::renderer, texture, &src, &dest );
+}
+void Character::KeyLock( int locktime ) {
+    keylock = true;
+    this->locktime = locktime;
+}
+bool Character::CheckKeyLock() {
+    return keylock;
 }

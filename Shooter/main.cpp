@@ -9,8 +9,8 @@
 #include <iostream>
 #include "Game.hpp"
 
-#define SCREEN_WIDTH 1024
-#define SCREEN_HEIGHT 768
+const int SCREEN_WIDTH = 1024;
+const int SCREEN_HEIGHT = 640;
 
 Game *game = nullptr;
 
@@ -24,10 +24,9 @@ int main(int argc, const char * argv[]) {
     
     game = new Game();
     
-    game->Init( "Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, true );
+    game->Init( "Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false );
     
-    while( game->Running() )
-    {
+    while( game->Running() ) {
         frameStart = SDL_GetTicks();
         
         game->HandleEvents();
@@ -36,8 +35,7 @@ int main(int argc, const char * argv[]) {
     
         frameTime = SDL_GetTicks() - frameStart;
         
-        if( frameDelay > frameTime )
-        {
+        if( frameDelay > frameTime ) {
             SDL_Delay( frameDelay - frameTime );
         }
     }

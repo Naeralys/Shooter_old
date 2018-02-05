@@ -20,14 +20,14 @@ void Combat::Shoot( GameObject* bullet, int direction ) {
 void Combat::Melee( Character* playerOne, Character* playerTwo, int direction ) {
     if( direction == 1 ) {
         if( ( playerTwo->x <= playerOne->x ) && ( playerTwo->x >= playerOne->x - 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
-            playerTwo->hp -= 5;
-            std::cout << "Health: " << playerTwo->hp << std::endl;
+            playerTwo->velX = -20;
+            playerTwo->KeyLock( 40 );
         }
     }
     if( direction == 2 ) {
         if( ( playerTwo->x >= playerOne->x ) && ( playerTwo->x <= playerOne->x + + 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
-            playerTwo->hp -= 5;
-            std::cout << "Health: " << playerTwo->hp << std::endl;
+            playerTwo->velX = 20;
+            playerTwo->KeyLock( 40 );
         }
     }
 }

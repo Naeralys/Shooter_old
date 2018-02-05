@@ -13,7 +13,10 @@
 #include "SDL2/SDL.h"
 #include "SDL2_image/SDL_image.h"
 
-class Game{
+extern const int SCREEN_WIDTH;
+extern const int SCREEN_HEIGHT;
+
+class Game {
 private:
     SDL_Window *window;
     int isRunning;

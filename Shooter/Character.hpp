@@ -16,13 +16,15 @@ private:
     SDL_Texture *texture;
     SDL_Rect src, dest;
     SDL_Renderer *renderer;
-    
+    bool keylock;
+    int locktimer, locktime;
 public:
-    float x, y, velX, velY, cooldown, hp;
+    float x, y, velX, velY, cooldown;
     Character( const char* fileName, SDL_Renderer *renderer, int x, int y );
     void Update();
     void Render();
-
+    void KeyLock( int locktime );
+    bool CheckKeyLock();
 };
 
 
