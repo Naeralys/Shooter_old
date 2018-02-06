@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		11B5FFE82029ADF700D8E704 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C52D321FFF203D00C6DD87 /* SDL2_image.framework */; };
+		11B5FFE92029ADF700D8E704 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66C52D311FFF203D00C6DD87 /* SDL2.framework */; };
+		11B5FFEF2029BE4D00D8E704 /* assets in CopyFiles */ = {isa = PBXBuildFile; fileRef = 11B5FFEE2029BE0600D8E704 /* assets */; };
 		662194791FFF24B800C87D15 /* Character.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 662194771FFF24B800C87D15 /* Character.cpp */; };
 		662203251FFF29E000610C2E /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 662203231FFF29E000610C2E /* TextureManager.cpp */; };
 		662203281FFF448C00610C2E /* GameObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 662203261FFF448C00610C2E /* GameObject.cpp */; };
 		6622032B1FFF469500610C2E /* Combat.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 662203291FFF469500610C2E /* Combat.cpp */; };
-		6695425E200723A700E7D1E6 /* SDL2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6695425D200723A700E7D1E6 /* SDL2.framework */; };
-		66954260200723AF00E7D1E6 /* SDL2_image.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6695425F200723AF00E7D1E6 /* SDL2_image.framework */; };
 		66C52D2A1FFF202100C6DD87 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66C52D291FFF202100C6DD87 /* main.cpp */; };
 		66C52D371FFF207A00C6DD87 /* Game.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66C52D351FFF207A00C6DD87 /* Game.cpp */; };
 		66F25A9D20044F1E00F5F2DF /* Collision.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 66F25A9B20044F1E00F5F2DF /* Collision.cpp */; };
@@ -21,16 +22,20 @@
 /* Begin PBXCopyFilesBuildPhase section */
 		66C52D241FFF202100C6DD87 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 7;
 			files = (
+				11B5FFEF2029BE4D00D8E704 /* assets in CopyFiles */,
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		11B5FFE42029A3BA00D8E704 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
+		11B5FFE52029A3BB00D8E704 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
+		11B5FFEE2029BE0600D8E704 /* assets */ = {isa = PBXFileReference; lastKnownFileType = folder; path = assets; sourceTree = "<group>"; };
 		662194771FFF24B800C87D15 /* Character.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Character.cpp; sourceTree = "<group>"; };
 		662194781FFF24B800C87D15 /* Character.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Character.hpp; sourceTree = "<group>"; };
 		662203231FFF29E000610C2E /* TextureManager.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = TextureManager.cpp; sourceTree = "<group>"; };
@@ -44,8 +49,8 @@
 		6695425F200723AF00E7D1E6 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = Shooter/lib/SDL2_image.framework; sourceTree = "<group>"; };
 		66C52D261FFF202100C6DD87 /* Shooter */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Shooter; sourceTree = BUILT_PRODUCTS_DIR; };
 		66C52D291FFF202100C6DD87 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		66C52D311FFF203D00C6DD87 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = ../../../../Library/Frameworks/SDL2.framework; sourceTree = "<group>"; };
-		66C52D321FFF203D00C6DD87 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = ../../../../Library/Frameworks/SDL2_image.framework; sourceTree = "<group>"; };
+		66C52D311FFF203D00C6DD87 /* SDL2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2.framework; path = Shooter/lib/SDL2.framework; sourceTree = "<group>"; };
+		66C52D321FFF203D00C6DD87 /* SDL2_image.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SDL2_image.framework; path = Shooter/lib/SDL2_image.framework; sourceTree = "<group>"; };
 		66C52D351FFF207A00C6DD87 /* Game.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Game.cpp; sourceTree = "<group>"; };
 		66C52D361FFF207A00C6DD87 /* Game.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Game.hpp; sourceTree = "<group>"; };
 		66F25A9B20044F1E00F5F2DF /* Collision.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Collision.cpp; sourceTree = "<group>"; };
@@ -57,8 +62,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				66954260200723AF00E7D1E6 /* SDL2_image.framework in Frameworks */,
-				6695425E200723A700E7D1E6 /* SDL2.framework in Frameworks */,
+				11B5FFE82029ADF700D8E704 /* SDL2_image.framework in Frameworks */,
+				11B5FFE92029ADF700D8E704 /* SDL2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,7 @@
 		66C52D281FFF202100C6DD87 /* Shooter */ = {
 			isa = PBXGroup;
 			children = (
+				11B5FFEE2029BE0600D8E704 /* assets */,
 				662194771FFF24B800C87D15 /* Character.cpp */,
 				662194781FFF24B800C87D15 /* Character.hpp */,
 				662203231FFF29E000610C2E /* TextureManager.cpp */,
@@ -106,7 +112,9 @@
 			isa = PBXGroup;
 			children = (
 				6695425F200723AF00E7D1E6 /* SDL2_image.framework */,
+				11B5FFE52029A3BB00D8E704 /* SDL2_image.framework */,
 				6695425D200723A700E7D1E6 /* SDL2.framework */,
+				11B5FFE42029A3BA00D8E704 /* SDL2.framework */,
 				6695425B2007238100E7D1E6 /* lib */,
 				66C52D321FFF203D00C6DD87 /* SDL2_image.framework */,
 				66C52D311FFF203D00C6DD87 /* SDL2.framework */,
@@ -290,26 +298,36 @@
 		66C52D2E1FFF202100C6DD87 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 35XFAFE9EM;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)/Shooter/lib",
 				);
+				INSTALL_PATH = /Users/benlongmire/GitHub/Adam/shooter;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Debug;
 		};
 		66C52D2F1FFF202100C6DD87 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 35XFAFE9EM;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(LOCAL_LIBRARY_DIR)/Frameworks",
 					"$(PROJECT_DIR)/Shooter/lib",
 				);
+				INSTALL_PATH = /Users/benlongmire/GitHub/Adam/shooter;
+				MACOSX_DEPLOYMENT_TARGET = 10.12;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 			};
 			name = Release;
 		};
