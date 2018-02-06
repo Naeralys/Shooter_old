@@ -9,14 +9,16 @@
 #include "Collision.hpp"
 
 void Collision::Bullet( Character *player, GameObject *bullet ) {
-    if( ( bullet->x >= player->x ) && ( bullet->x <= player->x + 32 ) && ( bullet->y >= player->y ) && ( bullet->y <= player->y + 32 ) ) {
-        if( bullet->velX > 0 ) {
-            player->velX = 10;
-            player->KeyLock( 20 );
-        }
-        if( bullet->velX < 0 ) {
-            player->velX = -10;
-            player->KeyLock( 20);
+    if( player->Vulnerable() ) {
+        if( ( bullet->x >= player->x ) && ( bullet->x <= player->x + 32 ) && ( bullet->y >= player->y ) && ( bullet->y <= player->y + 32 ) ) {
+            if( bullet->velX > 0 ) {
+                player->velX = 5 * player->Knockback();
+                player->KeyLock( 20 );
+            }
+            if( bullet->velX < 0 ) {
+                player->velX = -5 * player->Knockback();
+                player->KeyLock( 20);
+            }
         }
     }
 }

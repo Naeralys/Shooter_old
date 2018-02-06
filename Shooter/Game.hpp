@@ -23,9 +23,11 @@ private:
 public:
     void Init( const char *title, int xPos, int yPos, int width, int height, bool fullscreen );
     void HandleEvents();
+    void Start();
     void Update();
     void Render();
     void Clean();
+    void Reset();
     bool Running() { return isRunning; };
     
     static SDL_Renderer *renderer;

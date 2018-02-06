@@ -25,7 +25,9 @@ const Uint8 *keyState;
 SDL_Renderer* Game::renderer = nullptr;
 
 void Game::Init( const char *title, int xPos, int yPos, int width, int height, bool fullscreen ) {
+    // Initialize SDL with everything
     if( SDL_Init( SDL_INIT_EVERYTHING ) == 0 ) {
+        // Create a window
         window = SDL_CreateWindow( title, xPos, yPos, width, height, fullscreen );
         if( window ) {
             std::cout << "Window created!" << std::endl;
@@ -33,7 +35,7 @@ void Game::Init( const char *title, int xPos, int yPos, int width, int height, b
         else {
             std::cout << "Error creating window..." << std::endl;
         }
-        
+        // Create a renderer
         renderer = SDL_CreateRenderer( window, -1, 0 );
         if( renderer ) {
             std::cout << "Renderer created!" << std::endl;
@@ -49,7 +51,7 @@ void Game::Init( const char *title, int xPos, int yPos, int width, int height, b
         std::cout << "Error initializing SDL..." << std::endl;
     }
     
-    // INITIALIZE GAME CONTROLLER
+    // Initialize game controllers, maximum 2 players
     for( int i = 0; i < 2; i++ ) {
         if( SDL_IsGameController( i ) ) {
             controller[i] = SDL_GameControllerOpen( i );
@@ -62,15 +64,41 @@ void Game::Init( const char *title, int xPos, int yPos, int width, int height, b
         }
     }
     
+    // Create game assets
     map = new GameObject( "assets/background.bmp", Game::renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
-    playerOne = new Character( "assets/player.bmp", Game::renderer,  100, 100 );
-    playerTwo = new Character( "assets/player.bmp", Game::renderer,  100, 100 );
+    playerOne = new Character( "assets/player.bmp", Game::renderer,  130, SCREEN_HEIGHT - 300 );
+    playerTwo = new Character( "assets/player.bmp", Game::renderer,  SCREEN_WIDTH - 150, SCREEN_HEIGHT - 300 );
     bulletOne = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
     bulletTwo = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
     tile[0] = new GameObject( "assets/bullet.bmp", Game::renderer, 100, SCREEN_HEIGHT - 250, 100, 10 );
     tile[1] = new GameObject( "assets/bullet.bmp", Game::renderer, (SCREEN_WIDTH/2) - 50, SCREEN_HEIGHT - 300, 100, 10 );
     tile[2] = new GameObject( "assets/bullet.bmp", Game::renderer, SCREEN_WIDTH - 200, SCREEN_HEIGHT - 250, 100, 10 );
 }
+
+void Game::Start() {
+    int startMenu = 1;
+    while( startMenu ) {
+        SDL_SetRenderDrawColor( renderer, 0, 0, 0, 0 );
+        SDL_RenderClear( renderer );
+        map->Render();
+        SDL_RenderPresent( renderer );
+        
+        SDL_Event event;
+        keyState = SDL_GetKeyboardState( NULL );
+        
+        while( SDL_PollEvent( &event ) != 0 ) {
+            if( event.type == SDL_QUIT )
+                isRunning = false;
+        }
+        if( keyState[ SDL_SCANCODE_SPACE ] )
+            startMenu = 0;
+    }
+}
+
+/*                        *
+ * EVENTS AND USER INPUTS *
+ *                        */
+
 void Game::HandleEvents() {
     SDL_Event event;
     while( SDL_PollEvent( &event ) != 0 ) {
@@ -97,10 +125,12 @@ void Game::HandleEvents() {
         if( keyState[ SDL_SCANCODE_E ] && playerOne->velX > -2 && playerOne->velX <= 5 ) {
             playerOne->velX = 15;
             playerOne->KeyLock( 25 );
+            playerOne->Invulnerable();
         }
         if( keyState[ SDL_SCANCODE_Q ] && playerOne->velX < 2 && playerOne->velX >= -5 ) {
             playerOne->velX = -15;
             playerOne->KeyLock( 25 );
+            playerOne->Invulnerable();
         }
     }
     // Keyboard - Combat
@@ -128,6 +158,9 @@ void Game::HandleEvents() {
             combat->Melee( playerOne, playerTwo, 2 );
             playerOne->cooldown = 0;
         }
+        // Block
+        if( keyState[ SDL_SCANCODE_C ] )
+            playerOne->Block( true );
     }
     // Controller - Movement
     if( !playerOne->CheckKeyLock() ) {
@@ -141,11 +174,11 @@ void Game::HandleEvents() {
             playerOne->velX = SDL_GameControllerGetAxis( controller[0], SDL_CONTROLLER_AXIS_LEFTX ) * movementSpeed;
         // Dash
         if( SDL_GameControllerGetAxis( controller[0], SDL_CONTROLLER_AXIS_RIGHTX ) < -15000 && playerOne->velX > -2 && playerOne->velX <= 5 ) {
-            playerOne->velX = 15;
+            playerOne->velX = -15;
             playerOne->KeyLock( 25 );
         }
         if( SDL_GameControllerGetAxis( controller[0], SDL_CONTROLLER_AXIS_RIGHTX ) > 15000 && playerOne->velX < 2 && playerOne->velX >= -5 ) {
-            playerOne->velX = -15;
+            playerOne->velX = 15;
             playerOne->KeyLock( 25 );
         }
     }
@@ -174,6 +207,9 @@ void Game::HandleEvents() {
             combat->Melee( playerOne, playerTwo, 2 );
             playerOne->cooldown = 0;
         }
+        // Block
+        if( SDL_GameControllerGetButton( controller[0], SDL_CONTROLLER_BUTTON_B ) )
+            playerOne->Block( true );
     }
     
     /*                        *
@@ -225,6 +261,9 @@ void Game::HandleEvents() {
             combat->Melee( playerTwo, playerOne, 2 );
             playerTwo->cooldown = 0;
         }
+        // Block
+        if( keyState[ SDL_SCANCODE_0 ] )
+            playerTwo->Block( true );
     }
     // Controller - Movement
     if( !playerTwo->CheckKeyLock() ) {
@@ -271,24 +310,30 @@ void Game::HandleEvents() {
             combat->Melee( playerTwo, playerOne, 2 );
             playerTwo->cooldown = 0;
         }
+        // Block
+        if( SDL_GameControllerGetButton( controller[1], SDL_CONTROLLER_BUTTON_B ) )
+            playerTwo->Block( true );
     }
 }
 void Game::Update() {
+    // Collision
     collision->Map( playerOne, tile );
     collision->Map( playerTwo, tile );
     collision->Bullet( playerTwo, bulletOne );
     collision->Bullet( playerOne, bulletTwo );
+    // Update position
     playerOne->Update();
     playerTwo->Update();
     bulletOne->Update();
     bulletTwo->Update();
+    // Winning condition
     if( playerOne->x < 0 || playerOne->x > SCREEN_WIDTH ) {
         std::cout << "Player Two Wins!" << std::endl;
-        isRunning = false;
+        Game::Reset();
     }
     if( playerTwo->x < 0 || playerTwo->x > SCREEN_WIDTH ) {
         std::cout << "Player One Wins!" << std::endl;
-        isRunning = false;
+        Game::Reset();
     }
 }
 void Game::Render() {
@@ -303,6 +348,22 @@ void Game::Render() {
     bulletOne->Render();
     bulletTwo->Render();
     SDL_RenderPresent( renderer );
+}
+void Game::Reset() {
+    // Reset player one
+    playerOne->x = 150;
+    playerOne->y = SCREEN_HEIGHT - 250;
+    playerOne->velX = 0;
+    playerOne->velY = 0;
+    
+    // Reset player two
+    playerTwo->x = SCREEN_WIDTH - 150;
+    playerTwo->y = SCREEN_HEIGHT - 250;
+    playerTwo->velX = 0;
+    playerTwo->velY = 0;
+    
+    // Start screen
+    Game::Start();
 }
 void Game::Clean() {
     SDL_DestroyWindow( window );

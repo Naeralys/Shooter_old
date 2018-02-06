@@ -26,6 +26,8 @@ int main(int argc, const char * argv[]) {
     
     game->Init( "Shooter", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, false );
     
+    game->Start();
+    
     while( game->Running() ) {
         frameStart = SDL_GetTicks();
         

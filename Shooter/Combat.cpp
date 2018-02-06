@@ -18,16 +18,30 @@ void Combat::Shoot( GameObject* bullet, int direction ) {
 }
 
 void Combat::Melee( Character* playerOne, Character* playerTwo, int direction ) {
-    if( direction == 1 ) {
-        if( ( playerTwo->x <= playerOne->x ) && ( playerTwo->x >= playerOne->x - 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
-            playerTwo->velX = -20;
-            playerTwo->KeyLock( 40 );
+    if( playerTwo->Vulnerable() ) {
+        if( direction == 1 ) {
+            if( ( playerTwo->x <= playerOne->x ) && ( playerTwo->x >= playerOne->x - 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
+                if( playerTwo->Block() ) {
+                    playerOne->velX = 10 * playerOne->Knockback();
+                    playerOne->KeyLock( 40 );
+                }
+                else {
+                    playerTwo->velX = -10 * playerTwo->Knockback();
+                    playerTwo->KeyLock( 40 );
+                }
+            }
         }
-    }
-    if( direction == 2 ) {
-        if( ( playerTwo->x >= playerOne->x ) && ( playerTwo->x <= playerOne->x + + 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
-            playerTwo->velX = 20;
-            playerTwo->KeyLock( 40 );
+        if( direction == 2 ) {
+            if( ( playerTwo->x >= playerOne->x ) && ( playerTwo->x <= playerOne->x + + 70 ) && ( playerTwo->y >= playerOne->y ) && ( playerTwo->y <= playerOne->y + 32 ) ) {
+                if( playerTwo->Block() ) {
+                    playerOne->velX = -10 * playerOne->Knockback();
+                    playerOne->KeyLock( 40 );
+                }
+                else {
+                    playerTwo->velX = 10 * playerTwo->Knockback();
+                    playerTwo->KeyLock( 40 );
+                }
+            }
         }
     }
 }
