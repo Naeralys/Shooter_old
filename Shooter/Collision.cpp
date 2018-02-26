@@ -36,9 +36,9 @@ void Collision::Map( Character *player, GameObject *tile[] ) {
     }
 }
 bool Collision::Object( Character *player, GameObject *rect ) {
-    if( ( player->x + 16 >= rect->x ) && ( player->x <= ( rect->x + rect->w ) ) && ( player->y + 32 >= rect->y ) && ( player->y + 32 <= rect->y + 50 ) && player->velY > 0 ) {
+    if( ( player->x + 64 >= rect->x ) && ( player->x <= ( rect->x + rect->w - 32 ) ) && ( player->y + 64 >= rect->y ) && ( player->y + 64 <= rect->y + 64 ) && player->velY > 0 ) {
         player->velY = 0;
-        player->y = rect->y - 32;
+        player->y = rect->y - 64;
         return true;
     }
     return false;

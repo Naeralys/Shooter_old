@@ -14,13 +14,14 @@
 #include "Collision.hpp"
 
 Character* playerOne, *playerTwo;
-GameObject* bulletOne, *bulletTwo, *tile[5], *map;
+GameObject* bulletOne[10], *bulletTwo[10], *tile[5], *map;
 Combat* combat;
 Collision* collision;
 SDL_GameController* controller[2];
 
 float movementSpeed = 0.0002;
 const Uint8 *keyState;
+int bulletIndex = 0;
 
 SDL_Renderer* Game::renderer = nullptr;
 
@@ -66,10 +67,15 @@ void Game::Init( const char *title, int xPos, int yPos, int width, int height, b
     
     // Create game assets
     map = new GameObject( "assets/background.bmp", Game::renderer, 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT );
-    playerOne = new Character( "assets/player.bmp", Game::renderer,  130, SCREEN_HEIGHT - 300 );
-    playerTwo = new Character( "assets/player.bmp", Game::renderer,  SCREEN_WIDTH - 150, SCREEN_HEIGHT - 300 );
-    bulletOne = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
-    bulletTwo = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
+    // Load players
+    playerOne = new Character( "assets/player_one.bmp", Game::renderer,  130, SCREEN_HEIGHT - 300 );
+    playerTwo = new Character( "assets/player_one.bmp", Game::renderer,  SCREEN_WIDTH - 150, SCREEN_HEIGHT - 300 );
+    // Load bullets
+    for( int i = 0; i < 10; i++ ) {
+        bulletOne[i] = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
+        bulletTwo[i] = new GameObject( "assets/bullet.bmp", Game::renderer, 0, 0, 5, 5 );
+    }
+    // Load tiles
     tile[0] = new GameObject( "assets/bullet.bmp", Game::renderer, 100, SCREEN_HEIGHT - 250, 100, 10 );
     tile[1] = new GameObject( "assets/bullet.bmp", Game::renderer, (SCREEN_WIDTH/2) - 50, SCREEN_HEIGHT - 300, 100, 10 );
     tile[2] = new GameObject( "assets/bullet.bmp", Game::renderer, SCREEN_WIDTH - 200, SCREEN_HEIGHT - 250, 100, 10 );
@@ -91,6 +97,10 @@ void Game::Start() {
                 isRunning = false;
         }
         if( keyState[ SDL_SCANCODE_SPACE ] )
+            startMenu = 0;
+        if( SDL_GameControllerGetButton( controller[0], SDL_CONTROLLER_BUTTON_A ))
+            startMenu = 0;
+        if( SDL_GameControllerGetButton( controller[1], SDL_CONTROLLER_BUTTON_A ))
             startMenu = 0;
     }
 }
@@ -117,17 +127,23 @@ void Game::HandleEvents() {
         if( keyState[ SDL_SCANCODE_W ] && playerOne->velY == 0 )
             playerOne->velY = -20;
         // Movement
-        if( keyState[ SDL_SCANCODE_A ] )
-            playerOne->velX = -5;
-        if( keyState[ SDL_SCANCODE_D ] )
-            playerOne->velX = 5;
+        if( keyState[ SDL_SCANCODE_A ] ) {
+            playerOne->velX = -7;
+            playerOne->Running( 1 );
+        }
+        else if( keyState[ SDL_SCANCODE_D ] ) {
+            playerOne->velX = 7;
+            playerOne->Running( 2 );
+        }
+        else
+            playerOne->Running( 0 );
         // Dash
-        if( keyState[ SDL_SCANCODE_E ] && playerOne->velX > -2 && playerOne->velX <= 5 ) {
+        if( keyState[ SDL_SCANCODE_E ] && playerOne->velX > -2 && playerOne->velX < 5.1 ) {
             playerOne->velX = 15;
             playerOne->KeyLock( 25 );
             playerOne->Invulnerable();
         }
-        if( keyState[ SDL_SCANCODE_Q ] && playerOne->velX < 2 && playerOne->velX >= -5 ) {
+        if( keyState[ SDL_SCANCODE_Q ] && playerOne->velX < 2 && playerOne->velX > -5.1 ) {
             playerOne->velX = -15;
             playerOne->KeyLock( 25 );
             playerOne->Invulnerable();
@@ -138,16 +154,20 @@ void Game::HandleEvents() {
     if( !playerOne->CheckKeyLock() && playerOne->cooldown >= 30 ) {
         // Shoot
         if( keyState[ SDL_SCANCODE_G] ) {
-            bulletOne->x= playerOne->x - 16;
-            bulletOne->y= playerOne->y + 16;
-            combat->Shoot( bulletOne, 1 );
+            bulletOne[bulletIndex]->x= playerOne->x + 75;
+            bulletOne[bulletIndex]->y= playerOne->y + 26;
+            combat->Shoot( bulletOne[bulletIndex], 1 );
             playerOne->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         if( keyState[ SDL_SCANCODE_F ] ) {
-            bulletOne->x = playerOne->x + 16;
-            bulletOne->y = playerOne->y + 16;
-            combat->Shoot( bulletOne, 2 );
+            bulletOne[bulletIndex]->x = playerOne->x + 50;
+            bulletOne[bulletIndex]->y = playerOne->y + 26;
+            combat->Shoot( bulletOne[bulletIndex], 2 );
             playerOne->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         // Melee
         if( keyState[ SDL_SCANCODE_R ] ) {
@@ -187,16 +207,20 @@ void Game::HandleEvents() {
     if( !playerOne->CheckKeyLock() && playerOne->cooldown >= 30 ) {
         // Shoot
         if( SDL_GameControllerGetButton( controller[0], SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) ) {
-            bulletOne->x= playerOne->x - 16;
-            bulletOne->y= playerOne->y + 16;
-            combat->Shoot( bulletOne, 1 );
+            bulletOne[bulletIndex]->x= playerOne->x - 16;
+            bulletOne[bulletIndex]->y= playerOne->y + 16;
+            combat->Shoot( bulletOne[bulletIndex], 1 );
             playerOne->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         if( SDL_GameControllerGetButton( controller[0], SDL_CONTROLLER_BUTTON_LEFTSHOULDER ) ) {
-            bulletOne->x = playerOne->x + 16;
-            bulletOne->y = playerOne->y + 16;
-            combat->Shoot( bulletOne, 2 );
+            bulletOne[bulletIndex]->x = playerOne->x + 16;
+            bulletOne[bulletIndex]->y = playerOne->y + 16;
+            combat->Shoot( bulletOne[bulletIndex], 2 );
             playerOne->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         // Melee
         if( SDL_GameControllerGetAxis( controller[0], SDL_CONTROLLER_AXIS_TRIGGERLEFT ) > 10000 ) {
@@ -222,10 +246,17 @@ void Game::HandleEvents() {
         if( keyState[ SDL_SCANCODE_UP ] && playerTwo->velY == 0 )
             playerTwo->velY = -20;
         // Movement
-        if( keyState[ SDL_SCANCODE_LEFT ] )
+        if( keyState[ SDL_SCANCODE_LEFT ] ) {
             playerTwo->velX = -5;
-        if( keyState[ SDL_SCANCODE_RIGHT ] )
+            playerTwo->Running( 1 );
+        }
+        else if( keyState[ SDL_SCANCODE_RIGHT ] ) {
             playerTwo->velX = 5;
+            playerTwo->Running( 2 );
+        }
+        else {
+            playerTwo->Running( 0 );
+        }
         // Dash
         if( keyState[ SDL_SCANCODE_9 ] && playerTwo->velX > -2 && playerTwo->velX <= 5 ) {
             playerTwo->velX = 15;
@@ -241,16 +272,20 @@ void Game::HandleEvents() {
     if( !playerTwo->CheckKeyLock() && playerTwo->cooldown >= 30 ) {
         // Shoot
         if( keyState[ SDL_SCANCODE_L ] ) {
-            bulletTwo->x = playerTwo->x - 16;
-            bulletTwo->y = playerTwo->y + 16;
-            combat->Shoot( bulletTwo, 1 );
+            bulletTwo[bulletIndex]->x = playerTwo->x + 75;
+            bulletTwo[bulletIndex]->y = playerTwo->y + 26;
+            combat->Shoot( bulletTwo[bulletIndex], 1 );
             playerTwo->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         if( keyState[ SDL_SCANCODE_K ] ) {
-            bulletTwo->x = playerTwo->x + 16;
-            bulletTwo->y = playerTwo->y + 16;
-            combat->Shoot( bulletTwo, 2 );
+            bulletTwo[bulletIndex]->x = playerTwo->x + 50;
+            bulletTwo[bulletIndex]->y = playerTwo->y + 26;
+            combat->Shoot( bulletTwo[bulletIndex], 2 );
             playerTwo->cooldown = 0;
+            if( bulletIndex < 10 )
+                bulletIndex++;
         }
         // Melee
         if( keyState[ SDL_SCANCODE_I ] ) {
@@ -290,16 +325,20 @@ void Game::HandleEvents() {
     if( !playerTwo->CheckKeyLock() && playerTwo->cooldown >= 30 ) {
         // Shoot
         if( SDL_GameControllerGetButton( controller[1], SDL_CONTROLLER_BUTTON_RIGHTSHOULDER ) ) {
-            bulletTwo->x = playerTwo->x - 16;
-            bulletTwo->y = playerTwo->y + 16;
-            combat->Shoot( bulletTwo, 1 );
+            bulletTwo[bulletIndex]->x = playerTwo->x - 16;
+            bulletTwo[bulletIndex]->y = playerTwo->y + 16;
+            combat->Shoot( bulletTwo[bulletIndex], 1 );
             playerTwo->cooldown = 0;
+            if( bulletIndex < 5 )
+                bulletIndex++;
         }
         if( SDL_GameControllerGetButton( controller[1], SDL_CONTROLLER_BUTTON_LEFTSHOULDER ) ) {
-            bulletTwo->x = playerTwo->x + 16;
-            bulletTwo->y = playerTwo->y + 16;
-            combat->Shoot( bulletTwo, 2 );
+            bulletTwo[bulletIndex]->x = playerTwo->x + 16;
+            bulletTwo[bulletIndex]->y = playerTwo->y + 16;
+            combat->Shoot( bulletTwo[bulletIndex], 2 );
             playerTwo->cooldown = 0;
+            if( bulletIndex < 5 )
+                bulletIndex++;
         }
         // Melee
         if( SDL_GameControllerGetAxis( controller[1], SDL_CONTROLLER_AXIS_TRIGGERLEFT ) > 10000 ) {
@@ -319,13 +358,17 @@ void Game::Update() {
     // Collision
     collision->Map( playerOne, tile );
     collision->Map( playerTwo, tile );
-    collision->Bullet( playerTwo, bulletOne );
-    collision->Bullet( playerOne, bulletTwo );
+    for( int i = 0; i < 10; i++ ) {
+        collision->Bullet( playerTwo, bulletOne[i] );
+        collision->Bullet( playerOne, bulletTwo[i] );
+    }
     // Update position
     playerOne->Update();
     playerTwo->Update();
-    bulletOne->Update();
-    bulletTwo->Update();
+    for( int i = 0; i < 10; i++ ) {
+        bulletOne[i]->Update();
+        bulletTwo[i]->Update();
+    }
     // Winning condition
     if( playerOne->x < 0 || playerOne->x > SCREEN_WIDTH ) {
         std::cout << "Player Two Wins!" << std::endl;
@@ -335,6 +378,9 @@ void Game::Update() {
         std::cout << "Player One Wins!" << std::endl;
         Game::Reset();
     }
+    // Bullet index
+    if( bulletIndex >= 10 )
+        bulletIndex = 0;
 }
 void Game::Render() {
     SDL_SetRenderDrawColor( renderer, 0, 0, 0, 0 );
@@ -345,8 +391,10 @@ void Game::Render() {
     tile[2]->Render();
     playerOne->Render();
     playerTwo->Render();
-    bulletOne->Render();
-    bulletTwo->Render();
+    for( int i = 0; i < 10; i++ ) {
+        bulletOne[i]->Render();
+        bulletTwo[i]->Render();
+    }
     SDL_RenderPresent( renderer );
 }
 void Game::Reset() {
@@ -355,12 +403,14 @@ void Game::Reset() {
     playerOne->y = SCREEN_HEIGHT - 250;
     playerOne->velX = 0;
     playerOne->velY = 0;
+    playerOne->ResetKnockback();
     
     // Reset player two
     playerTwo->x = SCREEN_WIDTH - 150;
     playerTwo->y = SCREEN_HEIGHT - 250;
     playerTwo->velX = 0;
     playerTwo->velY = 0;
+    playerTwo->ResetKnockback();
     
     // Start screen
     Game::Start();

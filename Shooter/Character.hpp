@@ -17,22 +17,26 @@ private:
     SDL_Rect src, dest;
     SDL_Renderer *renderer;
     float knockback;
-    bool keylock, vulnerable, block;
-    int locktimer, locktime, vulnerableTimer, blockTimer;
+    bool keylock, vulnerable, block, runningLeft, runningRight;
+    int locktimer, locktime, vulnerableTimer, blockTimer, blockCooldown;
     int animationTimer, animationChoice;
 public:
     float x, y, velX, velY, cooldown;
     Character( const char* fileName, SDL_Renderer *renderer, int x, int y );
     void Update();
     void Render();
-    void Animation( int animationChoice, int animationLenght );
+    void Animation( int animationLenght );
+    void RunAnimation( int direction );
     float Knockback();
+    void ResetKnockback();
     void KeyLock( int locktime );
     bool CheckKeyLock();
     bool Vulnerable();
     bool Block();
     void Block( bool blockTrigger );
     void Invulnerable();
+    int Running();
+    void Running( int direction );
 };
 
 

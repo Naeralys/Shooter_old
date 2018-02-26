@@ -9,6 +9,8 @@
 #include "Character.hpp"
 #include "TextureManager.hpp"
 
+#define BlockCooldown 120
+
 Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y ) {
     this->renderer = renderer;
     texture = TextureManager::LoadTexture( fileName );
@@ -18,8 +20,8 @@ Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y
     this->velY = 0;
     src.x = 0;
     src.y = 0;
-    src.h = 32;
-    src.w = 32;
+    src.h = 64;
+    src.w = 128;
     dest.h = src.h;
     dest.w = src.w;
     keylock = false;
@@ -27,12 +29,12 @@ Character::Character( const char* fileName, SDL_Renderer* renderer, int x, int y
     animationChoice = 0;
     knockback = 1.0;
     vulnerable = true;
+    runningLeft = false;
+    runningRight = false;
 }
 
 void Character::Update() {
     // Idle animation
-    if( animationChoice == 1 )
-        Animation( 0, 0 );
     x += velX;
     y += velY;
     
@@ -58,34 +60,66 @@ void Character::Update() {
     }
     if( Block() ) {
         blockTimer++;
-        if( blockTimer > 10)
+        if( blockTimer > 10) {
             block = false;
+            blockCooldown = 0;
+        }
     }
+    if( !Block() ) {
+        if( blockCooldown <= 60 )
+            blockCooldown++;
+    }
+    if( !Running() ) {
+        src.y = 0;
+        src.x = 0;
+        animationTimer = 0;
+    }
+    else if( Running() == 1 )
+        RunAnimation( 1 );
+    else if( Running() == 2 )
+        RunAnimation( 2 );
 }
-void Character::Animation( int animationChoice, int animationLenght ) {
+
+void Character::RunAnimation( int direction ) {
+    if( direction == 1 ) {
+    }
+    else if( direction == 2 ) {
+        Animation( 1536 );
+        src.y = 64;
+    }
+
+}
+void Character::Animation( int animationLenght ) {
     // Move the index
     switch( animationTimer ) {
         case 0: src.x = 0;
             break;
-        case 5: src.x = 32;
+        case 2: src.x = 128;
             break;
-        case 10: src.x = 64;
+        case 4: src.x = 256;
             break;
-        case 15: src.x = 96;
+        case 6: src.x = 384;
             break;
-        case 20: src.x = 128;
+        case 8: src.x = 512;
             break;
-        case 25: src.x = 160;
+        case 10: src.x = 640;
+            break;
+        case 12: src.x = 768;
+            break;
+        case 14: src.x = 896;
+            break;
+        case 16: src.x = 1024;
+            break;
+        case 18: src.x = 1152;
+            break;
+        case 20: src.x = 1280;
+            break;
+        case 22: src.x = 1408;
+            break;
+        case 23: animationTimer = 0;
             break;
     }
-    // End the animation, reset back to idle
-    if( animationTimer > animationLenght ) {
-        animationTimer = 0;
-        if( animationChoice != 1 )
-            animationChoice = 1;
-    }
-    // Increment the timer
-    animationTimer++;
+    animationTimer ++;
 }
 void Character::Render() {
     SDL_RenderCopy( Game::renderer, texture, &src, &dest );
@@ -93,6 +127,9 @@ void Character::Render() {
 float Character::Knockback() {
     knockback = knockback * 1.1;
     return knockback;
+}
+void Character::ResetKnockback() {
+    knockback = 1.0;
 }
 void Character::KeyLock( int locktime ) {
     keylock = true;
@@ -112,8 +149,29 @@ bool Character::Block() {
     return block;
 }
 void Character::Block( bool blockTrigger ) {
-    if( blockTrigger ) {
+    if( blockTrigger && blockCooldown >= BlockCooldown ) {
         block = true;
         blockTimer = 0;
+    }
+}
+int Character::Running() {
+    if( runningLeft == true )
+        return 1;
+    if( runningRight == true )
+        return 2;
+    return 0;
+}
+void Character::Running( int direction ) {
+    if( direction == 0 ) {
+        runningLeft = false;
+        runningRight = false;
+    }
+    if( direction == 1 ) {
+        runningLeft = true;
+        runningRight = false;
+    }
+    if( direction == 2 ) {
+        runningRight = true;
+        runningLeft = false;
     }
 }
